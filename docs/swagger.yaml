@@ -1,0 +1,225 @@
+info:
+  contact: {}
+paths:
+  /login:
+    post:
+      parameters:
+      - description: userName
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 用户登录
+      tags:
+      - 公共方法
+  /problem-create:
+    post:
+      parameters:
+      - description: token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: content
+        in: formData
+        name: content
+        required: true
+        type: string
+      - description: max_mem
+        in: formData
+        name: max_mem
+        type: integer
+      - description: max_runtime
+        in: formData
+        name: max_runtime
+        type: integer
+      - description: category_ids
+        in: formData
+        name: category_ids
+        type: array
+      - description: test_cases
+        in: formData
+        name: test_cases
+        required: true
+        type: array
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 创建问题
+      tags:
+      - 管理员私有方法
+  /problem-detail:
+    get:
+      parameters:
+      - description: problem identity
+        in: query
+        name: identity
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 问题详情
+      tags:
+      - 公共方法
+  /problem-list:
+    get:
+      parameters:
+      - description: 输入页码，默认第一页
+        in: query
+        name: page
+        type: integer
+      - description: 页面大小，默认为20
+        in: query
+        name: size
+        type: integer
+      - description: 查询关键词，进行模糊查询
+        in: query
+        name: keyword
+        type: string
+      - description: 分类的唯一标识
+        in: query
+        name: category_identity
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 问题列表
+      tags:
+      - 公共方法
+  /rank-list:
+    get:
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: size
+        in: query
+        name: size
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 提交排行榜
+      tags:
+      - 公共方法
+  /register:
+    post:
+      parameters:
+      - description: userName
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: verifyCode
+        in: formData
+        name: code
+        required: true
+        type: string
+      - description: userPhoneNumber
+        in: formData
+        name: phone
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 用户注册
+      tags:
+      - 公共方法
+  /send-code:
+    get:
+      parameters:
+      - description: to user email
+        in: query
+        name: toUserEmail
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 发送验证码
+      tags:
+      - 公共方法
+  /submit-list:
+    get:
+      parameters:
+      - description: 输入页码，默认第一页
+        in: query
+        name: page
+        type: integer
+      - description: 页面大小，默认为20
+        in: query
+        name: size
+        type: integer
+      - description: 问题的唯一标识
+        in: query
+        name: problem_identity
+        type: string
+      - description: 用户的唯一标识
+        in: query
+        name: user_identity
+        type: string
+      - description: 提交状态
+        in: query
+        name: status
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 提交记录列表
+      tags:
+      - 公共方法
+  /user-detail:
+    get:
+      parameters:
+      - description: user identity
+        in: query
+        name: identity
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 用户详情
+      tags:
+      - 公共方法
+swagger: "2.0"
