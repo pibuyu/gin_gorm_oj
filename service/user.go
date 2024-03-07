@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gin_gorm_o/consts"
 	"gin_gorm_o/define"
 	"gin_gorm_o/helper"
 	"gin_gorm_o/models"
@@ -236,6 +237,17 @@ func LogIn(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"msg":  "Generate token error:" + err.Error(),
+		})
+		return
+	}
+
+	//登录的时候把token写进去
+	redisKey := consts.LOG_IN_TOKEN_KEY + user.Name
+	err = models.Redis.Set(ctx, redisKey, token, time.Hour*24*7).Err()
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "Set token to redis error:" + err.Error(),
 		})
 		return
 	}

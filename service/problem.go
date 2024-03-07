@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-// GetProoblemList
+// GetProblemList
 // @Tags 公共方法
 // @Summary 问题列表
 // @Param page query int false "输入页码，默认第一页"

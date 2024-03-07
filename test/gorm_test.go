@@ -1,6 +1,7 @@
 package test
 
 import (
+	"gin_gorm_o/models"
 	"testing"
 )
 
@@ -34,4 +35,10 @@ func TestGormTest(t *testing.T) {
 	//for _, v := range data {
 	//	fmt.Println(v)
 	//}
+
+	err := models.DB.Debug().Model(new(models.CategoryBasic)).Where("name = ?", "数组").Delete(new(models.CategoryBasic)).Error
+
+	if err != nil {
+		t.Fatal(err)
+	}
 }

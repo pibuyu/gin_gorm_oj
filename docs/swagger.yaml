@@ -1,6 +1,113 @@
 info:
   contact: {}
 paths:
+  /category-create:
+    post:
+      parameters:
+      - description: authorization
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 分类名
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: 父类名
+        in: formData
+        name: parent_id
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 分类创建
+      tags:
+      - 管理员私有方法
+  /category-delete:
+    post:
+      parameters:
+      - description: authorization
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 分类名
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: 父类名
+        in: formData
+        name: parent_id
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 分类删除
+      tags:
+      - 管理员私有方法
+  /category-list:
+    get:
+      parameters:
+      - description: authorization
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 输入页码，默认第一页
+        in: query
+        name: page
+        type: integer
+      - description: 页面大小，默认为20
+        in: query
+        name: size
+        type: integer
+      - description: 查询关键词，进行模糊查询
+        in: query
+        name: keyword
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 分类列表
+      tags:
+      - 管理员私有方法
+  /category-update:
+    post:
+      parameters:
+      - description: authorization
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 分类名
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: 分类唯一标识
+        in: formData
+        name: identity
+        type: string
+      - description: 父类名
+        in: formData
+        name: parent_id
+        type: integer
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 分类更新
+      tags:
+      - 管理员私有方法
   /login:
     post:
       parameters:
