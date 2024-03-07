@@ -29,7 +29,7 @@ func Router() *gin.Engine {
 	r.POST("/register", service.Register) //要用post方法，用get方法报404，找半天错，淦
 	r.POST("/login", service.LogIn)
 
-	//submit records
+	//提交记录
 	r.GET("/submit-list", service.GetSubmitList)
 
 	/*管理员私有方法*/
@@ -41,6 +41,8 @@ func Router() *gin.Engine {
 	r.POST("/category-delete", middleware.AuthAdminCheck(), service.CategoryDelete)
 	//分类修改
 	r.POST("/category-update", middleware.AuthAdminCheck(), service.CategoryUpdate)
+	//删除问题
+	r.POST("/problem-delete", middleware.AuthAdminCheck(), service.ProblemDelete)
 
 	return r
 }

@@ -94,3 +94,55 @@ func GetProblemDetail(c *gin.Context) {
 		"data": problemBasic,
 	})
 }
+
+// ProblemDelete
+// @Tags 管理员私有方法
+// @Summary 删除问题
+// @Param authorization header string true "authorization"
+// @Param identity formData string true "问题的唯一标识"
+// @Success 200 {string} json "{"code":"200","data":""}"
+// @Router /problem-delete [post]
+func ProblemDelete(c *gin.Context) {
+	problemIdentity := c.PostForm("identity")
+	if problemIdentity == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "problem identity can not be empty",
+		})
+		return
+	}
+
+	/*
+		删除问题之前先尝试删除problem_category中问题和分类的关联数据项.
+		本来想对err额外做一次ErrNotFound判断，发现不需要,
+		因为delete操作实际上是update语句，当没有问题和分类的关联项时，update影响的行数为0，不会报错。
+	*/
+	err := models.DB.Debug().Model(&models.ProblemCategory{}).
+		Where("problem_id =(select id from problem_basic where identity = ?)", problemIdentity).
+		Delete(&models.ProblemCategory{}).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "Delete Problem-related Category Error:" + err.Error(),
+		})
+		return
+	}
+
+	//删除分类之后，再删除问题
+	err = models.DB.Debug().Model(&models.ProblemBasic{}).
+		Where("identity = ?", problemIdentity).Delete(&models.ProblemBasic{}).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "Delete Problem Error:" + err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 200,
+		"data": map[string]interface{}{
+			"msg":                     "delete problem success!",
+			"deleted prblem identity": problemIdentity,
+		},
+	})
+}

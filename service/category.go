@@ -67,6 +67,14 @@ func CategoryCreate(c *gin.Context) {
 	categoryName := c.PostForm("name")
 	categoryParentId, _ := strconv.Atoi(c.PostForm("parent_id"))
 	categoryIdentity := helper.GetUUID()
+	if categoryName == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "category name can not be empty",
+		})
+		return
+	}
+
 	oneCategory := &models.CategoryBasic{
 		Name:     categoryName,
 		ParentId: categoryParentId,
@@ -84,7 +92,7 @@ func CategoryCreate(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
 		"data": map[string]interface{}{
-			"msg":          "category create success",
+			"msg":          "category create success!",
 			"categoryInfo": oneCategory,
 		},
 	})
@@ -97,12 +105,49 @@ func CategoryCreate(c *gin.Context) {
 // @Param authorization header string true "authorization"
 // @Param name formData string true "分类名"
 // @Param parent_id formData int false "父类名"
+// @Param identity formData string true "分类唯一标识"
 // @Success 200 {string} json "{"code":"200","data":""}"
 // @Router /category-delete [post]
 func CategoryDelete(c *gin.Context) {
 	categoryName := c.PostForm("name")
 	categoryParentId, _ := strconv.Atoi(c.PostForm("parent_id"))
-	err := models.DB.Model(new(models.CategoryBasic)).Where("name = ? and parent_id = ?", categoryName, categoryParentId).Delete(&models.CategoryBasic{}).Error
+	categoryIdentity := c.PostForm("identity")
+	if categoryIdentity == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "category identity can not be empty",
+		})
+		return
+	}
+
+	/*
+		删除分类之前需要判断分类下是否存在问题，传进来的是问题的identity，
+		根据identity查询对应的id，再去ProblemCategory表查询是否存在category_id=id的数据,
+		如果有，说明这个分类下有子问题，不能直接删除；
+		如果没有，说明这个分类没有子问题，可以删除
+	*/
+	var count int64
+	//.Model(new(models.ProblemCategory))要放在查询条件的前面，不然会报错：未指定table
+	err := models.DB.Model(new(models.ProblemCategory)).Debug().
+		Where("category_id = (select id from category_basic where identity =?)", categoryIdentity).Count(&count).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "Get Sub-problem Count of Category  Error:" + err.Error(),
+		})
+		return
+	}
+	if count > 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "该分类下存在问题,请先删除子问题",
+		})
+		return
+	}
+
+	//到这里说明分类下没有子问题， 删除这个分类
+	err = models.DB.Debug().Model(new(models.CategoryBasic)).Where("identity = ?", categoryIdentity).
+		Delete(&models.CategoryBasic{}).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
@@ -130,13 +175,21 @@ func CategoryUpdate(c *gin.Context) {
 	categoryName := c.PostForm("name")
 	categoryIdentity := c.PostForm("identity")
 	categoryParentId, _ := strconv.Atoi(c.PostForm("parent_id"))
+	if categoryName == "" || categoryIdentity == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "category_name and category_identity can not be empty",
+		})
+		return
+	}
+
 	newCategory := &models.CategoryBasic{
 		Name:     categoryName,
 		ParentId: categoryParentId,
 		Identity: categoryIdentity,
 	}
-	log.Println(newCategory)
-	err := models.DB.Debug().Model(new(models.CategoryBasic)).Where("name = ?", categoryName).
+	err := models.DB.Model(new(models.CategoryBasic)).
+		Where("identity = ?", categoryIdentity).
 		Updates(newCategory).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -148,7 +201,7 @@ func CategoryUpdate(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
 		"data": map[string]interface{}{
-			"msg":          "category update success",
+			"msg":          "category update success!",
 			"categoryInfo": newCategory,
 		},
 	})

@@ -68,6 +68,13 @@
                         "description": "父类名",
                         "name": "parent_id",
                         "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "分类唯一标识",
+                        "name": "identity",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -249,6 +256,38 @@
                         "type": "array",
                         "description": "test_cases",
                         "name": "test_cases",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":\"200\",\"data\":\"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/problem-delete": {
+            "post": {
+                "tags": [
+                    "管理员私有方法"
+                ],
+                "summary": "删除问题",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "authorization",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "问题的唯一标识",
+                        "name": "identity",
                         "in": "formData",
                         "required": true
                     }

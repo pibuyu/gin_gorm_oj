@@ -43,6 +43,11 @@ paths:
         in: formData
         name: parent_id
         type: integer
+      - description: 分类唯一标识
+        in: formData
+        name: identity
+        required: true
+        type: string
       responses:
         "200":
           description: '{"code":"200","data":""}'
@@ -170,6 +175,27 @@ paths:
           schema:
             type: string
       summary: 创建问题
+      tags:
+      - 管理员私有方法
+  /problem-delete:
+    post:
+      parameters:
+      - description: authorization
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 问题的唯一标识
+        in: formData
+        name: identity
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 删除问题
       tags:
       - 管理员私有方法
   /problem-detail:
