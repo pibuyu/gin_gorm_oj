@@ -18,7 +18,7 @@ import (
 // @Param size query int false "页面大小，默认为20"
 // @Param keyword query string false "查询关键词，进行模糊查询"
 // @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /category-list [get]
+// @Router /admin/category-list [get]
 func GetCategoryList(c *gin.Context) {
 	size, err := strconv.Atoi(c.DefaultQuery("size", define.DefaultSize))
 	if err != nil {
@@ -44,7 +44,7 @@ func GetCategoryList(c *gin.Context) {
 		})
 		return
 	}
-	log.Println(categoryList)
+
 	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
 		"data": map[string]interface{}{
@@ -62,7 +62,7 @@ func GetCategoryList(c *gin.Context) {
 // @Param name formData string true "分类名"
 // @Param parent_id formData int false "父类名"
 // @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /category-create [post]
+// @Router /admin/category-create [post]
 func CategoryCreate(c *gin.Context) {
 	categoryName := c.PostForm("name")
 	categoryParentId, _ := strconv.Atoi(c.PostForm("parent_id"))
@@ -107,7 +107,7 @@ func CategoryCreate(c *gin.Context) {
 // @Param parent_id formData int false "父类名"
 // @Param identity formData string true "分类唯一标识"
 // @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /category-delete [post]
+// @Router /admin/category-delete [post]
 func CategoryDelete(c *gin.Context) {
 	categoryName := c.PostForm("name")
 	categoryParentId, _ := strconv.Atoi(c.PostForm("parent_id"))
@@ -170,7 +170,7 @@ func CategoryDelete(c *gin.Context) {
 // @Param identity formData string false "分类唯一标识"
 // @Param parent_id formData int false "父类名"
 // @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /category-update [put]
+// @Router /admin/category-update [put]
 func CategoryUpdate(c *gin.Context) {
 	categoryName := c.PostForm("name")
 	categoryIdentity := c.PostForm("identity")

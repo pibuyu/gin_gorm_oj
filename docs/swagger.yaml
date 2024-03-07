@@ -1,7 +1,7 @@
 info:
   contact: {}
 paths:
-  /category-create:
+  /admin/category-create:
     post:
       parameters:
       - description: authorization
@@ -26,7 +26,7 @@ paths:
       summary: 分类创建
       tags:
       - 管理员私有方法
-  /category-delete:
+  /admin/category-delete:
     post:
       parameters:
       - description: authorization
@@ -56,7 +56,7 @@ paths:
       summary: 分类删除
       tags:
       - 管理员私有方法
-  /category-list:
+  /admin/category-list:
     get:
       parameters:
       - description: authorization
@@ -84,7 +84,7 @@ paths:
       summary: 分类列表
       tags:
       - 管理员私有方法
-  /category-update:
+  /admin/category-update:
     put:
       parameters:
       - description: authorization
@@ -113,28 +113,7 @@ paths:
       summary: 分类更新
       tags:
       - 管理员私有方法
-  /login:
-    post:
-      parameters:
-      - description: userName
-        in: formData
-        name: name
-        required: true
-        type: string
-      - description: password
-        in: formData
-        name: password
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{"code":"200","data":""}'
-          schema:
-            type: string
-      summary: 用户登录
-      tags:
-      - 公共方法
-  /problem-create:
+  /admin/problem-create:
     post:
       parameters:
       - description: token
@@ -177,7 +156,7 @@ paths:
       summary: 创建问题
       tags:
       - 管理员私有方法
-  /problem-delete:
+  /admin/problem-delete:
     post:
       parameters:
       - description: authorization
@@ -198,49 +177,7 @@ paths:
       summary: 删除问题
       tags:
       - 管理员私有方法
-  /problem-detail:
-    get:
-      parameters:
-      - description: problem identity
-        in: query
-        name: identity
-        type: string
-      responses:
-        "200":
-          description: '{"code":"200","data":""}'
-          schema:
-            type: string
-      summary: 问题详情
-      tags:
-      - 公共方法
-  /problem-list:
-    get:
-      parameters:
-      - description: 输入页码，默认第一页
-        in: query
-        name: page
-        type: integer
-      - description: 页面大小，默认为20
-        in: query
-        name: size
-        type: integer
-      - description: 查询关键词，进行模糊查询
-        in: query
-        name: keyword
-        type: string
-      - description: 分类的唯一标识
-        in: query
-        name: category_identity
-        type: string
-      responses:
-        "200":
-          description: '{"code":"200","data":""}'
-          schema:
-            type: string
-      summary: 问题列表
-      tags:
-      - 公共方法
-  /problem-update:
+  /admin/problem-update:
     put:
       parameters:
       - description: authorization
@@ -285,6 +222,69 @@ paths:
       summary: 问题更新
       tags:
       - 管理员私有方法
+  /login:
+    post:
+      parameters:
+      - description: userName
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 用户登录
+      tags:
+      - 公共方法
+  /problem-detail:
+    get:
+      parameters:
+      - description: problem identity
+        in: query
+        name: identity
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 问题详情
+      tags:
+      - 公共方法
+  /problem-list:
+    get:
+      parameters:
+      - description: 输入页码，默认第一页
+        in: query
+        name: page
+        type: integer
+      - description: 页面大小，默认为20
+        in: query
+        name: size
+        type: integer
+      - description: 查询关键词，进行模糊查询
+        in: query
+        name: keyword
+        type: string
+      - description: 分类的唯一标识
+        in: query
+        name: category_identity
+        type: string
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 问题列表
+      tags:
+      - 公共方法
   /rank-list:
     get:
       parameters:

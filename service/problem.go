@@ -59,7 +59,7 @@ func GetProblemList(c *gin.Context) {
 	})
 }
 
-// GetProoblemDetail
+// GetProblemDetail
 // @Tags 公共方法
 // @Summary 问题详情
 // @Param identity query string false "problem identity"
@@ -104,7 +104,7 @@ func GetProblemDetail(c *gin.Context) {
 // @Param authorization header string true "authorization"
 // @Param identity formData string true "问题的唯一标识"
 // @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /problem-delete [post]
+// @Router /admin/problem-delete [post]
 func ProblemDelete(c *gin.Context) {
 	problemIdentity := c.PostForm("identity")
 	if problemIdentity == "" {
@@ -162,7 +162,7 @@ func ProblemDelete(c *gin.Context) {
 // @Param category_ids formData array false "category_ids"
 // @Param test_cases formData array false "test_cases"
 // @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /problem-update [put]
+// @Router /admin/problem-update [put]
 func ProblemUpdate(c *gin.Context) {
 	identity := c.PostForm("identity")
 	title := c.PostForm("title")
@@ -258,6 +258,7 @@ func ProblemUpdate(c *gin.Context) {
 		}
 
 		/*问题测试用例保存*/
+		//TODO:当传入多个测试用例的时候，取不到输入的测试用例，待改进
 		if testCases == nil {
 			return nil
 		}
@@ -271,6 +272,7 @@ func ProblemUpdate(c *gin.Context) {
 			return err
 		}
 		//2、创建新的问题和测试用例的关联项
+		//  {"input":"1 2\n","output":"3"}
 		testCaseBasics := make([]*models.TestCase, 0)
 		for _, testCase := range testCases {
 			caseMap := make(map[string]string)

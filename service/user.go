@@ -332,7 +332,7 @@ func GetRankList(c *gin.Context) {
 // @Param category_ids formData array false "category_ids"
 // @Param test_cases formData array true "test_cases"
 // @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /problem-create [post]
+// @Router /admin/problem-create [post]
 func ProblemCreate(c *gin.Context) {
 	//log.Println("problem create开始执行")
 	title := c.PostForm("title")

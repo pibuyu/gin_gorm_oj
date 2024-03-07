@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/category-create": {
+        "/admin/category-create": {
             "post": {
                 "tags": [
                     "管理员私有方法"
@@ -53,7 +53,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/category-delete": {
+        "/admin/category-delete": {
             "post": {
                 "tags": [
                     "管理员私有方法"
@@ -98,7 +98,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/category-list": {
+        "/admin/category-list": {
             "get": {
                 "tags": [
                     "管理员私有方法"
@@ -141,7 +141,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/category-update": {
+        "/admin/category-update": {
             "put": {
                 "tags": [
                     "管理员私有方法"
@@ -185,39 +185,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/login": {
-            "post": {
-                "tags": [
-                    "公共方法"
-                ],
-                "summary": "用户登录",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "userName",
-                        "name": "name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "password",
-                        "name": "password",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/problem-create": {
+        "/admin/problem-create": {
             "post": {
                 "tags": [
                     "管理员私有方法"
@@ -281,7 +249,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/problem-delete": {
+        "/admin/problem-delete": {
             "post": {
                 "tags": [
                     "管理员私有方法"
@@ -299,6 +267,106 @@ const docTemplate = `{
                         "type": "string",
                         "description": "问题的唯一标识",
                         "name": "identity",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":\"200\",\"data\":\"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/problem-update": {
+            "put": {
+                "tags": [
+                    "管理员私有方法"
+                ],
+                "summary": "问题更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "authorization",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "问题的唯一标识",
+                        "name": "identity",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "问题标题",
+                        "name": "title",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "问题内容",
+                        "name": "content",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "最大运行内存",
+                        "name": "max_mem",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "最大运行时间",
+                        "name": "max_runtime",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "description": "category_ids",
+                        "name": "category_ids",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "description": "test_cases",
+                        "name": "test_cases",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":\"200\",\"data\":\"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "公共方法"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "userName",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
                         "in": "formData",
                         "required": true
                     }
@@ -367,74 +435,6 @@ const docTemplate = `{
                         "description": "分类的唯一标识",
                         "name": "category_identity",
                         "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\":\"200\",\"data\":\"\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/problem-update": {
-            "put": {
-                "tags": [
-                    "管理员私有方法"
-                ],
-                "summary": "问题更新",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "authorization",
-                        "name": "authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "问题的唯一标识",
-                        "name": "identity",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "问题标题",
-                        "name": "title",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "问题内容",
-                        "name": "content",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "最大运行内存",
-                        "name": "max_mem",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "最大运行时间",
-                        "name": "max_runtime",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "array",
-                        "description": "category_ids",
-                        "name": "category_ids",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "array",
-                        "description": "test_cases",
-                        "name": "test_cases",
-                        "in": "formData"
                     }
                 ],
                 "responses": {
