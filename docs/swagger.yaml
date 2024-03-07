@@ -85,7 +85,7 @@ paths:
       tags:
       - 管理员私有方法
   /category-update:
-    post:
+    put:
       parameters:
       - description: authorization
         in: header
@@ -240,6 +240,51 @@ paths:
       summary: 问题列表
       tags:
       - 公共方法
+  /problem-update:
+    put:
+      parameters:
+      - description: authorization
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 问题的唯一标识
+        in: formData
+        name: identity
+        required: true
+        type: string
+      - description: 问题标题
+        in: formData
+        name: title
+        type: string
+      - description: 问题内容
+        in: formData
+        name: content
+        type: string
+      - description: 最大运行内存
+        in: formData
+        name: max_mem
+        type: integer
+      - description: 最大运行时间
+        in: formData
+        name: max_runtime
+        type: integer
+      - description: category_ids
+        in: formData
+        name: category_ids
+        type: array
+      - description: test_cases
+        in: formData
+        name: test_cases
+        type: array
+      responses:
+        "200":
+          description: '{"code":"200","data":""}'
+          schema:
+            type: string
+      summary: 问题更新
+      tags:
+      - 管理员私有方法
   /rank-list:
     get:
       parameters:

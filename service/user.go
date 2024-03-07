@@ -241,7 +241,7 @@ func LogIn(c *gin.Context) {
 		return
 	}
 
-	//登录的时候把token写进去
+	//登录的时候把token写进redis
 	redisKey := consts.LOG_IN_TOKEN_KEY + user.Name
 	err = models.Redis.Set(ctx, redisKey, token, time.Hour*24*7).Err()
 	if err != nil {
@@ -369,6 +369,7 @@ func ProblemCreate(c *gin.Context) {
 		})
 	}
 	data.ProblemCategories = categoryBasics
+
 	//处理问题的测试用例
 	testCaseBasics := make([]*models.TestCase, 0)
 	for _, testCase := range test_cases {

@@ -157,7 +157,7 @@ func CategoryDelete(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
-		"msg":  "category delete success,deleted category name: " + categoryName + ", parent_id:" + strconv.Itoa(categoryParentId),
+		"msg":  "category delete success,deleted category name: " + categoryName + ", parent_id: " + strconv.Itoa(categoryParentId),
 	})
 	return
 }
@@ -170,7 +170,7 @@ func CategoryDelete(c *gin.Context) {
 // @Param identity formData string false "分类唯一标识"
 // @Param parent_id formData int false "父类名"
 // @Success 200 {string} json "{"code":"200","data":""}"
-// @Router /category-update [post]
+// @Router /category-update [put]
 func CategoryUpdate(c *gin.Context) {
 	categoryName := c.PostForm("name")
 	categoryIdentity := c.PostForm("identity")

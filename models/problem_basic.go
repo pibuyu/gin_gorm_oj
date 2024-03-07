@@ -9,7 +9,7 @@ type ProblemBasic struct {
 	Identity          string             `gorm:"column:identity;type:varchar(100);" json:"identity"` //问题的唯一标识
 	ProblemCategories []*ProblemCategory `gorm:"foreignKey:problem_id;references:id"`
 	Title             string             `gorm:"column:title;type:varchar(100);" json:"title"`
-	Content           string             `gorm:"column:content;type:text;" json:"content"`
+	Content           string             `gorm:"column:content;type:string;" json:"content"`
 	MaxRuntime        int                `gorm:"column:max_runtime;type:int;" json:"max_runtime"`
 	MaxMem            int                `gorm:"column:max_mem;type:int;" json:"max_mem"`
 	TestCases         []*TestCase        `gorm:"foreignKey:problem_identity;references:identity"` //问题与测试用例关联表
