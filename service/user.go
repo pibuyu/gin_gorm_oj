@@ -304,7 +304,7 @@ func GetRankList(c *gin.Context) {
 	for _, user := range userList {
 		user_rank := &models.UserRank{
 			Name:             user.Name,
-			FinishProblemNum: user.FinishProblemNum,
+			FinishProblemNum: user.PassNum,
 			SubmitNum:        user.SubmitNum,
 		}
 		rankList = append(rankList, user_rank)

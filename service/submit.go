@@ -2,10 +2,12 @@ package service
 
 import (
 	"bytes"
+	"errors"
 	"gin_gorm_o/define"
 	"gin_gorm_o/helper"
 	"gin_gorm_o/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"io"
 	"io/ioutil"
 	"log"
@@ -203,11 +205,33 @@ func SubmitCode(c *gin.Context) {
 		}
 	}
 
-	err = models.DB.Create(submitBasic).Error
-	if err != nil {
+	if err = models.DB.Transaction(func(tx *gorm.DB) error {
+		//保存代码
+		err = tx.Create(submitBasic).Error
+		if err != nil {
+			return errors.New("Save Submit Basic Error:" + err.Error())
+		}
+		//需要插入的数据
+		m := make(map[string]interface{})
+		m["submit_num"] = gorm.Expr("submit_num+?", 1) //无论对错，提交次数+1
+		if submitBasic.Status == 1 {
+			m["pass_num"] = gorm.Expr("pass_num+?", 1) //答案全部正确时，通过数+1
+		}
+		//更新user_basic中的pass_num和submit_num
+		err = tx.Model(new(models.UserBasic)).Where("identity = ?", userClaim.Identity).Updates(m).Error
+		if err != nil {
+			return errors.New("Update User Basic submit_num and pass_num Error:" + err.Error())
+		}
+		//更新problem_basic中的pass_num和submit_num
+		err = tx.Model(new(models.ProblemBasic)).Where("identity = ?", problemIdentity).Updates(m).Error
+		if err != nil {
+			return errors.New("Update Problem Basic submit_num and pass_num Error:" + err.Error())
+		}
+		return nil
+	}); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
-			"msg":  "Create Submit Basic Error:" + err.Error(),
+			"msg":  "Transaction Error:" + err.Error(),
 		})
 		return
 	}
