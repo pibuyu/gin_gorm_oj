@@ -4,7 +4,7 @@ import "fmt"
 
 // 两数之和
 func main() {
-	var a1, b int
+	var a, b int
 	fmt.Scanln(&a, &b)
 	fmt.Println(a + b)
 }

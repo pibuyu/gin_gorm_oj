@@ -272,7 +272,7 @@ func ProblemUpdate(c *gin.Context) {
 			return err
 		}
 		//2、创建新的问题和测试用例的关联项
-		//  {"input":"1 2\n","output":"3"}
+		//  {"input":"1 2\n","output":"3\n"}
 		testCaseBasics := make([]*models.TestCase, 0)
 		for _, testCase := range testCases {
 			caseMap := make(map[string]string)

@@ -51,5 +51,9 @@ func Router() *gin.Engine {
 	//修改问题
 	authAdmin.PUT("/problem-update", service.ProblemUpdate)
 
+	/*用户私有方法*/
+	authUser := r.Group("/user").Use(middleware.AuthUserCheck())
+	//代码提交
+	authUser.POST("/submit-code", service.SubmitCode)
 	return r
 }

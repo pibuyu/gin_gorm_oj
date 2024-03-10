@@ -9,6 +9,7 @@ import (
 	"github.com/jordan-wright/email"
 	uuid "github.com/satori/go.uuid"
 	"net/smtp"
+	"os"
 	"time"
 )
 
@@ -42,7 +43,7 @@ func MD5(password string) string {
 	return fmt.Sprintf("%x", md5.Sum([]byte(password)))
 }
 
-type userClaims struct {
+type UserClaims struct {
 	Name     string `json:"name"`
 	Identity string `json:"identity"`
 	IsAdmin  int    `json:"is_admin"`
@@ -56,7 +57,7 @@ var secretKey = []byte(consts.SECRET_KEY)
 func GenerateToken(name, identity string, is_admin int) (string, error) {
 	//设置token为7天过期
 	expireToken := time.Now().Add(time.Hour * 24 * 7).Unix()
-	userClaim := &userClaims{
+	userClaim := &UserClaims{
 		Identity: identity,
 		Name:     name,
 		IsAdmin:  is_admin,
@@ -75,8 +76,8 @@ func GenerateToken(name, identity string, is_admin int) (string, error) {
 }
 
 // 解析token
-func ParseToken(tokenString string) (*userClaims, error) {
-	userclaim := new(userClaims)
+func ParseToken(tokenString string) (*UserClaims, error) {
+	userclaim := new(UserClaims)
 	claims, err := jwt.ParseWithClaims(tokenString, userclaim,
 		func(token *jwt.Token) (interface{}, error) {
 			return secretKey, nil
@@ -89,4 +90,26 @@ func ParseToken(tokenString string) (*userClaims, error) {
 	}
 
 	return userclaim, nil
+}
+
+// CodeSave
+func CodeSave(code []byte) (string, error) {
+	dirName := "code/" + GetUUID()
+	path := dirName + "/main.go"
+
+	//创建保存文件夹
+	err := os.Mkdir(dirName, 0777) // 0777为文件夹权限
+	if err != nil {
+		return "", err
+	}
+
+	//创建文件并把code写进文件
+	file, err := os.Create(path)
+	if err != nil {
+		return "", err
+	}
+	file.Write(code)
+	defer file.Close()
+
+	return path, nil
 }
