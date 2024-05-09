@@ -75,7 +75,7 @@ func GetProblemDetail(c *gin.Context) {
 		return
 	}
 	problemBasic := new(models.ProblemBasic)
-	err := models.DB.Where("identity = ?", identity).
+	err := models.DB.Where("identity = ?", identity).Omit("deleted_at").
 		Preload("ProblemCategories").Preload("ProblemCategories.CategoryBasic").
 		First(&problemBasic).Error
 	if err != nil {

@@ -100,13 +100,13 @@ func SubmitCode(c *gin.Context) {
 	if !exists {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
-			"msg":  "Get User from from request body Error",
+			"msg":  "Get User from request body Error",
 		})
 		return
 	}
 	userClaim := u.(*helper.UserClaims) //类型强转为UserClaims
 
-	//生成一个submit_basic并插入
+	//生成一个submit_basic(提交记录)并插入
 	submitBasic := &models.SubmitBasic{
 		Identity:        helper.GetUUID(),
 		ProblemIdentity: problemIdentity,
@@ -115,7 +115,7 @@ func SubmitCode(c *gin.Context) {
 	}
 
 	//判断代码的正确性，返回WA,OOM等信息
-	//首先查询这个problem对应的basic
+	//首先查询这个problem对应的basic，提取出问题关联的测试用例
 	problemBasic := new(models.ProblemBasic)
 	err = models.DB.Where("identity = ?", problemIdentity).Preload("TestCases").First(problemBasic).Error
 	if err != nil {
@@ -125,19 +125,20 @@ func SubmitCode(c *gin.Context) {
 		})
 		return
 	}
-	//遍历测试用例并执行
-	WA := make(chan int)
-	OOM := make(chan int)
-	CE := make(chan int)
-	passCount := 0
-	//提示执行结果
-	var msg string
-	var lock sync.Mutex
 
+	WA := make(chan int)  //答案错误
+	OOM := make(chan int) //超内存
+	CE := make(chan int)  //编译错误
+
+	var msg string //提示执行结果
+	passCount := 0
+	var lock sync.Mutex //修改passCount用的互斥锁
+
+	//遍历测试用例并执行
 	for _, testCase := range problemBasic.TestCases {
 		testCase := testCase
 		go func() {
-			//执行测试
+			//执行测试，即runner.go里的内容
 			cmd := exec.Command("go", "run", path)
 			var out, stderr bytes.Buffer
 
@@ -168,11 +169,11 @@ func SubmitCode(c *gin.Context) {
 			//答案错误
 			log.Println("程序输出为: ", out.String())
 			if testCase.Output != out.String() {
-
 				WA <- 1
 				msg = "答案错误"
 				return
 			}
+
 			//运行超内存
 			log.Println("运行所需内存为: ", endMem.Alloc/1024-(beginMem.Alloc/1024))
 			if endMem.Alloc/1024-(beginMem.Alloc/1024) > uint64(problemBasic.MaxMem) {
@@ -181,12 +182,14 @@ func SubmitCode(c *gin.Context) {
 				return
 			}
 
+			//通过测试用例，通过用例数+1
 			lock.Lock()
 			passCount++
 			log.Println("通过的测试案例数：", passCount)
 			lock.Unlock()
 		}()
 	}
+
 	//-1-待判断；1-答案正确；2-答案错误；3-运行超时；4-运行超内存;5-编译错误
 	select {
 	case <-WA:
@@ -198,7 +201,7 @@ func SubmitCode(c *gin.Context) {
 	case <-time.After(time.Millisecond * time.Duration(problemBasic.MaxRuntime)):
 		if passCount == len(problemBasic.TestCases) {
 			submitBasic.Status = 1
-			msg = "答案正确"
+			msg = "答案正确,通过了所有测试用例"
 		} else {
 			submitBasic.Status = 3
 			msg = "运行超时"
@@ -211,7 +214,7 @@ func SubmitCode(c *gin.Context) {
 		if err != nil {
 			return errors.New("Save Submit Basic Error:" + err.Error())
 		}
-		//需要插入的数据
+		//记录user表和problem表的pass_num和submit_num
 		m := make(map[string]interface{})
 		m["submit_num"] = gorm.Expr("submit_num+?", 1) //无论对错，提交次数+1
 		if submitBasic.Status == 1 {

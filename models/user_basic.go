@@ -18,3 +18,10 @@ type UserBasic struct {
 func (table *UserBasic) TableName() string {
 	return "user_basic"
 }
+
+type UserList []UserBasic
+
+func (userlist *UserList) GetUserList() error {
+	err := DB.Find(&userlist).Error
+	return err
+}
